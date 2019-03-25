@@ -81,7 +81,7 @@ def test_softmax():
     """
     print "Running your tests..."
     ### YOUR CODE HERE
-    raise NotImplementedError
+
     ### END YOUR CODE
 
 
