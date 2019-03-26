@@ -39,10 +39,12 @@ def gradcheck_naive(f, x):
         ### YOUR CODE HERE:
         x[ix] += h
         random.setstate(rndstate)
-        before, _ = f(x)
+        before, nothing = f(x)
+
         random.setstate(rndstate)
         x[ix] -= 2 * h
-        after, _ = f(x)
+        after, nothing = f(x)
+
         x[ix] += h
         numgrad = (before - after) / (2 * h)
         ### END YOUR CODE

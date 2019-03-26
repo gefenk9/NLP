@@ -15,6 +15,10 @@ def normalizeRows(x):
     """
 
     ### YOUR CODE HERE
+    sqr = np.square(x)
+    sum_rows_nums = np.sum(sqr, axis=1)
+    root = np.sqrt(sum_rows_nums)
+    x = x / root[np.newaxis].T
     ### END YOUR CODE
 
     return x
@@ -57,7 +61,22 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+
+    #  predictions:
+    vhat = predicted
+    z = np.dot(outputVectors, vhat)
+    preds = softmax(z)
+
+    #  Calculate the cost:
+    cost = -np.log(preds[target])
+
+    #  Gradients
+    z = preds.copy()
+    z[target] -= 1.0
+
+    grad = np.outer(z, vhat)
+    gradPred = np.dot(outputVectors.T, z)
+
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -95,7 +114,21 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices.extend(getNegativeSamples(target, dataset, K))
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    grad = np.zeros(outputVectors.shape)
+    gradPred = np.zeros(predicted.shape)
+    cost = 0
+    z = sigmoid(np.dot(outputVectors[target], predicted))
+
+    cost -= np.log(z)
+    grad[target] += predicted * (z - 1.0)
+    gradPred += outputVectors[target] * (z - 1.0)
+
+    for k in xrange(K):
+        samp = indices[k + 1]
+        z = sigmoid(np.dot(outputVectors[samp], predicted))
+        cost -= np.log(1.0 - z)
+        grad[samp] += predicted * z
+        gradPred += outputVectors[samp] * z
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -130,7 +163,17 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    cost = 0.0;
+    gradIn = np.zeros_like(inputVectors);
+    gradOut = np.zeros_like(outputVectors);
+
+    for word in contextWords:
+        dcost, dgradIn, dgradOut = word2vecCostAndGradient(inputVectors[tokens[currentWord]], tokens[word],
+                                                           outputVectors, dataset)
+        cost += dcost
+        gradIn[tokens[currentWord]] += dgradIn
+        gradOut += dgradOut
+
     ### END YOUR CODE
 
     return cost, gradIn, gradOut
