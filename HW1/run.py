@@ -47,7 +47,7 @@ print "training took %d seconds" % (time.time() - startTime)
 # concatenate the input and output word vectors
 wordVectors = np.concatenate(
     (wordVectors[:nWords,:], wordVectors[nWords:,:]),
-    axis=0)
+    axis=1)
 # wordVectors = wordVectors[:nWords,:] + wordVectors[nWords:,:]
 
 visualizeWords = [
